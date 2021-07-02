@@ -6,4 +6,5 @@
 # https://github.com/XsongyangX/uml-class-fragmentation/releases/download/v1.0/images.tar.bz2
 
 wget https://github.com/XsongyangX/uml-class-fragmentation/releases/download/v1.0/images.tar.bz2
-tar -xjf images.tar.bz2
+mv images.tar.bz2 static/fragments/
+tar -xjf static/fragments/images.tar.bz2
