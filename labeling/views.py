@@ -1,8 +1,9 @@
 from django.shortcuts import render
+from django.views import generic
 
 # Create your views here.
-from django.http import HttpResponse
+from .models import Label, Fragment, Model
 
-
-def index(request):
-    return HttpResponse("Hello, world. You're at the labeling index.")
+class IndexView(generic.ListView):
+    model = Label
+    template_name = 'labeling/index.html'
