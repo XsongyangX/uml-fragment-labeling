@@ -1,0 +1,8 @@
+/* Override some template styles */
+.menu-items h3 {
+    color: #f9f9f9;
+}
+
+.menu-items address a {
+    color: #ffffff;
+}
