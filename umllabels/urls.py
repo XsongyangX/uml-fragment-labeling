@@ -20,6 +20,6 @@ from django.urls.conf import include
 
 urlpatterns = [
     path('labeling/', include(('labeling.urls', 'labeling'), namespace="labeling")),
-    path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls, name='admin'),
     path('', index),
 ]
