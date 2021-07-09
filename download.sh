@@ -7,5 +7,6 @@
 
 wget https://github.com/XsongyangX/uml-class-fragmentation/releases/download/v1.0/images.tar.bz2
 mkdir -p labeling/static/fragments
-mv images.tar.bz2 labeling/static/fragments/
-tar -xjf labeling/static/fragments/images.tar.bz2
+tar -xjf images.tar.bz2 --directory labeling/static/fragments
+mv labeling/static/fragments/to_be_labeled/*.png labeling/static/fragments/
+rmdir labeling/static/fragments/to_be_labeled

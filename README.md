@@ -9,11 +9,12 @@ To run this locally, you need:
 * [django](https://docs.djangoproject.com/en/3.2/topics/install/) : Version 3+
 * Python 3+
 * A Bash interpreter like Git Bash or Cygwin
+* wget: a GNU command for downloading files
 
 ### Collect data
 To collect the data into the repo, use `download.sh`. 
 ```bash
-download.sh
+./download.sh
 ```
 This will download a zip from another repo and unzip it in `labeling/static/fragments/`. About 9000 images totaling 200 MB will be available.
 
