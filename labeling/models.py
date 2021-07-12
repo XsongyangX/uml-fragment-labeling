@@ -15,4 +15,4 @@ class Model(models.Model):
 
 class Label(models.Model):
     label = models.TextField()
-    fragment = models.ForeignKey('Fragment', models.DO_NOTHING)
+    fragment = models.ForeignKey('Fragment', models.DO_NOTHING, null=True)
