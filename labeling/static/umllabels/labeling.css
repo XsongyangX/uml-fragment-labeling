@@ -1,0 +1,21 @@
+ /* https://usefulangle.com/post/1/jquery-dragging-image-within-div */
+#image-container {
+	display: block;
+	height: 300px;
+	width: 300px;
+	margin: 40px auto;
+	overflow: hidden;
+	border: 1px solid #cccccc;
+	box-sizing: border-box;
+	position: relative;
+	cursor: move;
+}
+
+#drag-image {
+	left: 0;
+	pointer-events: none;
+	position: relative;
+	top: 0;
+	-moz-user-select: none;
+    user-select: none;
+}

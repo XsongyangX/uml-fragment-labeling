@@ -12,6 +12,9 @@
 
     <link href="{% static 'templatemo_544_comparto/fontawesome/css/all.min.css' %}" rel="stylesheet" />
     <link href="{% static 'templatemo_544_comparto/css/templatemo-comparto.css' %}" rel="stylesheet" />
+    
+    {% comment %} Override {% endcomment %}
+    <link href="{% static 'umllabels/labeling.css' %}" rel="stylesheet" />
     <title>Labeling | The UML Labeling Initiative</title>
     <!--
 
@@ -54,7 +57,7 @@ https://templatemo.com/tm-544-comparto
                         <li class="tm-nav-item">
                             <a href="#contact" class="tm-nav-link">
                                 <span class="tm-nav-text tm-mb-1">4</span>
-                                <span class="tm-nav-text">Contact</span>
+                                <span class="tm-nav-text">Tutorial</span>
                             </a>
                         </li>
                     </ul>
@@ -240,19 +243,11 @@ https://templatemo.com/tm-544-comparto
             </div>
         </section> <!-- Gallery -->
         <section id="contact" class="tm-bg-color-5 tm-mb-3">
-            <h2 class="tm-text-white tm-contact-title">.04 Contact Us</h2>
+            <h2 class="tm-text-white tm-contact-title">4 Tutorial example</h2>
             <div class="tm-bg-color-white tm-contact-main">
                 <div class="map-outer">
-                    <div class="gmap-canvas">
-                        <!-- How to change your own map point
-                            1. Go to Google Maps
-                            2. Click on your location point
-                            3. Click "Share" and choose "Embed map" tab
-                            4. Copy only URL and paste it within the src="" field below
-                        -->
-                        <iframe width="100%" height="400" id="gmap-canvas"
-                            src="https://maps.google.com/maps?q=Av.+Lúcio+Costa,+Rio+de+Janeiro+-+RJ,+Brazil&t=&z=13&ie=UTF8&iwloc=&output=embed"
-                            frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+                    <div id="image-container"> <!-- https://usefulangle.com/post/1/jquery-dragging-image-within-div -->
+	                    <img id="drag-image" src="{% static 'umllabels/tutorial/CFG.png' %}" alt="Example model"/>
                     </div>
                 </div>
                 <div class="contact-form-outer">
@@ -292,15 +287,17 @@ https://templatemo.com/tm-544-comparto
             <a href="https://youtube.com" class="tm-social-link"><i class="fab fa-youtube tm-social-icon"></i></a>
         </div>
         <footer class="text-center tm-mb-1">
-            <p>Copyright &copy; 2020 Comparto Studio
+            <p>Copyright &copy; 2021 Song Yang
 
                 - Design: <a rel="nofollow noopener" href="https://templatemo.com" target="_blank">TemplateMo</a></p>
         </footer>
     </div> <!-- .container -->
+    
     <script src="{% static 'templatemo_544_comparto/js/jquery.min.js' %}"></script> <!-- https://jquery.com/download/ -->
     <script src="{% static 'templatemo_544_comparto/js/imagesloaded.pkgd.min.js' %}"></script> <!-- https://imagesloaded.desandro.com/ -->
     <script src="{% static 'templatemo_544_comparto/js/isotope.pkgd.min.js' %}"></script> <!-- https://isotope.metafizzy.co/ -->
     <script src="{% static 'templatemo_544_comparto/js/jquery.singlePageNav.min.js' %}"></script> <!-- https://github.com/ChrisWojcik/single-page-nav -->
+    <script src="{% static 'umllabels/drag.js' %}"></script> <!-- https://usefulangle.com/post/1/jquery-dragging-image-within-div-->
     <script>
 
         // Scroll to Top button
