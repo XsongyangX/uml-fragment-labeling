@@ -3,8 +3,8 @@
 var _DRAGGGING_STARTED = 0;
 var _LAST_MOUSEMOVE_POSITION = { x: null, y: null };
 var _DIV_OFFSET = $('#image-container').offset();
-var _CONTAINER_WIDTH = $("#image-container").outerWidth();
-var _CONTAINER_HEIGHT = $("#image-container").outerHeight();
+var _CONTAINER_WIDTH;
+var _CONTAINER_HEIGHT;
 var _IMAGE_WIDTH;
 var _IMAGE_HEIGHT;
 var _IMAGE_LOADED = 0;
@@ -24,6 +24,10 @@ else {
 function ImageLoaded() {
     _IMAGE_WIDTH = $("#drag-image").width();
     _IMAGE_HEIGHT = $("#drag-image").height();
+
+    _CONTAINER_WIDTH = $("#image-container").outerWidth();
+    _CONTAINER_HEIGHT = $("#image-container").outerHeight();
+
     _IMAGE_LOADED = 1;
 }
 
@@ -57,16 +61,63 @@ $('#image-container').on('mousemove', function (event) {
         var img_left_new = img_left + change_x;
 
         /* Validate top and left do not fall outside the image, otherwise white space will be seen */
-        if (img_top_new > 0)
-            img_top_new = 0;
-        if (img_top_new < (_CONTAINER_HEIGHT - _IMAGE_HEIGHT))
-            img_top_new = _CONTAINER_HEIGHT - _IMAGE_HEIGHT;
 
-        if (img_left_new > 0)
-            img_left_new = 0;
-        if (img_left_new < (_CONTAINER_WIDTH - _IMAGE_WIDTH))
-            img_left_new = _CONTAINER_WIDTH - _IMAGE_WIDTH;
+        var aesthetics = 0.5;
 
-        $("#drag-image").css({ top: img_top_new + 'px', left: img_left_new + 'px' });
+        if (currentScale <= 1) {// left side of the window is on the image
+            var leftSide = (img_left_new <= 0 && img_left_new >= -_IMAGE_WIDTH * aesthetics)
+                ? true : false;
+
+            // right side
+            var rightSide = (img_left_new <= _CONTAINER_WIDTH * aesthetics && img_left_new >= 0)
+                ? true : false;
+
+            var topSide = (img_top_new <= 0 && img_top_new >= -_IMAGE_HEIGHT * aesthetics)
+                ? true : false;
+
+            var botSide = (img_top_new <= _CONTAINER_HEIGHT * aesthetics && img_top_new >= 0)
+                ? true : false;
+        }
+        else // zoomed in
+        {
+            leftSide = rightSide = topSide = botSide = true;
+        }
+
+        // perform change component wise
+        if (leftSide || rightSide)
+            $("#drag-image").css({ left: img_left_new + 'px' });
+        if (topSide || botSide)
+            $("#drag-image").css({ top: img_top_new + 'px' })
     }
+});
+
+// https://stackoverflow.com/a/42058518/12944664
+var zoomSpeed = 0.1;
+var currentScale = 1;
+$("#image-container").on('wheel', function (event) {
+    event.preventDefault(); // https://stackoverflow.com/a/7600806/12944664
+
+    // deltaY obviously records vertical scroll, deltaX and deltaZ exist too.
+    // this condition makes sure it's vertical scrolling that happened
+    if (event.originalEvent.deltaY !== 0) {
+
+        if (event.originalEvent.deltaY < 0) {
+            // wheeled up => zoom out
+            currentScale -= zoomSpeed;
+        }
+        else {
+            // wheeled down => zoom in
+            currentScale += zoomSpeed;
+        }
+
+        // bounds on the scale factor
+        // greater than 10%
+        currentScale = currentScale <= 0.1 ? 0.1 : currentScale;
+
+        $("#drag-image").css("transform", "scale(" + currentScale + ")");
+    }
+});
+
+$("#re-center-button").click(function(event) {
+    $("#drag-image").css({transform: "none", left: "0px", top: "0px"});
 });
