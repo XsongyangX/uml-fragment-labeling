@@ -3,5 +3,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.IndexView.as_view(), name='index'),
+    path('', views.index, name='index'),
+    path('form/<slug:model>/<slug:kind>/<int:number>', views.get_form)
 ]

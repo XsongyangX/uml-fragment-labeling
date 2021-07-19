@@ -1,38 +1,51 @@
- /* https://usefulangle.com/post/1/jquery-dragging-image-within-div */
+/* https://usefulangle.com/post/1/jquery-dragging-image-within-div */
 
 .image-container {
-     display: block;
-     height: 100%;
-     /*300px;*/
-     width: 100%;
-     /*300px;*/
-     max-height: 400px;
-     margin: 40px auto;
-     overflow: hidden;
-     border: 1px solid #cccccc;
-     box-sizing: border-box;
-     position: relative;
-     cursor: move;
- }
+    display: block;
+    height: 100%;
+    /*300px;*/
+    width: 100%;
+    /*300px;*/
+    max-height: 400px;
+    margin: 40px auto;
+    overflow: hidden;
+    border: 1px solid #cccccc;
+    box-sizing: border-box;
+    position: relative;
+    cursor: move;
+}
 
 .drag-image {
-     left: 0;
-     pointer-events: none;
-     position: relative;
-     top: 0;
-     -moz-user-select: none;
-     user-select: none;
-     transform: scale(1);
- }
+    left: 0;
+    pointer-events: none;
+    position: relative;
+    top: 0;
+    -moz-user-select: none;
+    user-select: none;
+    transform: scale(1);
+}
 
 .re-center-button {
-     /* background-color: #4CAF50; */
-     /* Green */
-     border: none;
-     color: white;
-     padding: 15px 32px;
-     text-align: center;
-     text-decoration: none;
-     display: inline-block;
-     font-size: 16px;
- }
+    /* background-color: #4CAF50; */
+    /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+
+.in-rows {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.in-rows>.tm-btn {
+    padding: 15px 20px 15px 20px;
+    text-align: center;
+    cursor: pointer;
+}

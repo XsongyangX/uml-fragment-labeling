@@ -64,32 +64,34 @@ $('.image-container').on('mousemove', function (event) {
 
         /* Validate top and left do not fall outside the image, otherwise white space will be seen */
 
-        var aesthetics = 0.5;
+        // var aesthetics = 0.5;
 
-        if (currentScale <= 1) {// left side of the window is on the image
-            var leftSide = (img_left_new <= 0 && img_left_new >= -_IMAGE_WIDTH * aesthetics)
-                ? true : false;
+        // if (currentScale <= 1) {// left side of the window is on the image
+        //     var leftSide = (img_left_new <= 0 && img_left_new >= -_IMAGE_WIDTH * aesthetics)
+        //         ? true : false;
 
-            // right side
-            var rightSide = (img_left_new <= _CONTAINER_WIDTH * aesthetics && img_left_new >= 0)
-                ? true : false;
+        //     // right side
+        //     var rightSide = (img_left_new <= _CONTAINER_WIDTH * aesthetics && img_left_new >= 0)
+        //         ? true : false;
 
-            var topSide = (img_top_new <= 0 && img_top_new >= -_IMAGE_HEIGHT * aesthetics)
-                ? true : false;
+        //     var topSide = (img_top_new <= 0 && img_top_new >= -_IMAGE_HEIGHT * aesthetics)
+        //         ? true : false;
 
-            var botSide = (img_top_new <= _CONTAINER_HEIGHT * aesthetics && img_top_new >= 0)
-                ? true : false;
-        }
-        else // zoomed in
-        {
-            leftSide = rightSide = topSide = botSide = true;
-        }
+        //     var botSide = (img_top_new <= _CONTAINER_HEIGHT * aesthetics && img_top_new >= 0)
+        //         ? true : false;
+        // }
+        // else // zoomed in
+        // {
+        //     leftSide = rightSide = topSide = botSide = true;
+        // }
 
-        // perform change component wise
-        if (leftSide || rightSide)
-            thisImage.css({ left: img_left_new + 'px' });
-        if (topSide || botSide)
-            thisImage.css({ top: img_top_new + 'px' })
+        // // perform change component wise
+        // if (leftSide || rightSide)
+        //     thisImage.css({ left: img_left_new + 'px' });
+        // if (topSide || botSide)
+        //     thisImage.css({ top: img_top_new + 'px' });
+
+        thisImage.css({left: img_left_new + 'px', top: img_top_new + 'px'});
     }
 });
 
