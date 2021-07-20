@@ -10,7 +10,7 @@ def index(request):
         "total_fragments": Fragment.objects.count(),
         "models_done": Model.objects.filter(
             fragment__label__isnull=False
-        ).count(),
+        ).distinct().count(),
         "fragments_done": Label.objects.count()
     }
     return render(request, "umllabels/index.html", context=context)

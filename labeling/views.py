@@ -1,5 +1,5 @@
 from labeling.sampler import Sampler
-from django.http.response import HttpResponseForbidden
+from django.http.response import HttpResponse, HttpResponseForbidden
 from django.shortcuts import render
 from django.views import generic
 from django.http import HttpResponseRedirect
@@ -14,6 +14,16 @@ def index(request):
     form = LabelForm()
 
     model, fragment = Sampler.next()
+
+    # check for end conditions
+    if model == None and fragment == None:
+        return HttpResponse("Labeling complete!")
+    elif model == None and fragment != None:
+        return HttpResponseForbidden("No model but there is a fragment!")
+    elif model != None and fragment == None:
+        return HttpResponseForbidden("No fragment on this model")
+    else:
+        pass # business as usual
 
     context = {
         "shown_model": f"fragments/{model.name}.png",
