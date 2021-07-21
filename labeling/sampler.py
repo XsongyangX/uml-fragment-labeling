@@ -4,7 +4,7 @@ from .models import Model, Fragment
 
 class Sampler:
     
-    smallest_class_count = 1
+    current_class_count = 1
     largest_class_count = Model.objects.order_by("-classes").first().classes
 
     @staticmethod
@@ -16,7 +16,7 @@ class Sampler:
         if model == None:
             return None, None
         else:
-            model = model.get()
+            model = model[0]
         fragment: Fragment = Fragment.objects.filter(model=model, label__isnull=True).order_by("number").first()
         return model, fragment
 
@@ -24,15 +24,7 @@ class Sampler:
     def more_models(limit: int):
         """Returns a list of at most <limit> unfinished models
         """
-        probing_size = Sampler.smallest_class_count
-        models = Model.objects.filter(classes=probing_size, fragment__label__isnull=True)[:limit]
-
-        while len(models) == 0:
-            probing_size += 1
-            models = Model.objects.filter(classes=probing_size, fragment__label__isnull=True)[:limit]
-
-            # all finished labeling
-            if probing_size > Sampler.largest_class_count:
-                return None
+        probing_size = Sampler.current_class_count
+        models = Model.objects.filter(classes__gte=probing_size, fragment__label__isnull=True).distinct().order_by("classes")[:limit]
 
         return models

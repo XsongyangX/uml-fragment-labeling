@@ -7,13 +7,14 @@ from django.http import HttpResponseRedirect
 # Create your views here.
 from .models import Label, Fragment, Model
 
-from .forms import LabelForm
+from .forms import DuplicateLabelException, LabelForm
 
-def index(request):
+def index(request, model=None, fragment=None):
 
     form = LabelForm()
 
-    model, fragment = Sampler.next()
+    if model == None or fragment == None:
+        model, fragment = Sampler.next()
 
     # check for end conditions
     if model == None and fragment == None:
@@ -25,13 +26,43 @@ def index(request):
     else:
         pass # business as usual
 
+    # more models
+    more_models = [x for x in Sampler.more_models(6) if x != model]
+    more_fragments = [x for x in Fragment.objects.filter(model=model, label__isnull=True)[:6] if x != fragment]
+
+    more = []
+
+    for m in more_models:
+        incomplete_fragment = Fragment.objects.filter(model=m, label__isnull=True).first()
+        more.append({
+            "filter": "nature", # nature for models
+            "image": f"fragments/{m.name}.png",
+            "caption_header": m.name,
+            "caption": f"{m.classes} classes, {m.relations} relations",
+            "model": m.name,
+            "kind": incomplete_fragment.kind,
+            "number": incomplete_fragment.number,
+        })
+
+    for f in more_fragments:
+        more.append({
+            "filter": "animals", # nature for models
+            "image": f"fragments/{f}.png",
+            "caption_header": f"Fragment",
+            "caption": f"{f.kind} {f.number}",
+            "model": model.name,
+            "kind": f.kind,
+            "number": f.number,
+        })
+
     context = {
         "shown_model": f"fragments/{model.name}.png",
         "shown_model_name": model.name,
         "shown_fragment": f"fragments/{model.name}_{fragment.kind}{fragment.number}.png",
         "fragment_kind": fragment.kind,
         "fragment_number": fragment.number,
-        "form": form
+        "form": form,
+        "more": more
     }
     return render(request, "labeling/index.html", context=context)
 
@@ -52,10 +83,18 @@ def get_form(request, model, kind, number):
                 number=number,
                 kind=kind
             )
-            form.process(fragment)
+            try:
+                form.process(fragment)
+            except DuplicateLabelException:
+                return HttpResponse(f"An existing label already exists for {fragment}. Back to <a href='/'>Menu</a>.")
 
             return HttpResponseRedirect('/labeling/')
 
     # if a GET (or any other method) we throw an error
     else:
         return HttpResponseForbidden(content="You cannot come here")
+
+def specific(request, model, kind, number):
+    model = Model.objects.get(name=model)
+    fragment = Fragment.objects.get(model=model, kind=kind, number=number)
+    return index(request, model=model, fragment=fragment)
