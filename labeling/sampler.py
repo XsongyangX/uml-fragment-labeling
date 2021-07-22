@@ -54,10 +54,10 @@ class Sampler:
 
     @staticmethod
     def exclude_one(query: BaseManager, element: Union[Fragment, Model]):
-        if isinstance(element, Fragment) and isinstance(query.model, Fragment):
-            return query.exclude(kind=element.kind, number=element.number)
+        if isinstance(element, Fragment) and query.model.__name__ == 'Fragment':
+            return query.exclude(kind=element.kind, number=element.number, model=element.model)
         elif isinstance(element, Model):
-            if isinstance(query.model, Fragment):
+            if query.model.__name__ == 'Fragment':
                 return query.exclude(model__name=element.name)
             else:
                 return query.exclude(name=element.name)
@@ -105,6 +105,8 @@ class Sampler:
 
         if exclude is not None:
             models = models.exclude(name=exclude.name)
+
+        models = Sampler.excluding_reserved(models)
 
         return models.distinct().order_by("classes")[:limit]
 
