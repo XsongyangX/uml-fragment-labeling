@@ -8,11 +8,11 @@ import threading
 
 
 def block(duration):
-    def sleep_and_remove(reserved_data):
-        e = threading.Event()
-        e.wait(timeout=duration)
-
-        Sampler.recently_assigned.remove(reserved_data)
+    def sleep_and_remove(reserved_data: Union[Fragment, Model], condition: threading.Condition):
+        condition.acquire()
+        condition.wait(timeout=duration)
+        del Sampler.recently_assigned[str(reserved_data)]
+        condition.release()
 
     def wrapper(func):
         def wrapped(*args, **kwargs):
@@ -21,22 +21,49 @@ def block(duration):
             # returning from next(), only reserve the fragment
             if isinstance(result, tuple) and len(result) == 2:
                 _, fragment = result
-                Sampler.recently_assigned.append(fragment)
+
+                # check for existing reservation, do nothing if so
+                if str(fragment) in Sampler.recently_assigned:
+                    return result
+
+                condition = threading.Condition()
+                Sampler.recently_assigned[str(fragment)] = {
+                    "data_object": fragment,
+                    "thread_condition": condition,
+                }
                 threading.Thread(target=sleep_and_remove,
-                                 args=(fragment,)).start()
+                                 args=(fragment, condition),
+                                 name=str(fragment)).start()
 
             # returning a single model
             elif isinstance(result, Model):
-                Sampler.recently_assigned.append(result)
+                # check for existing reservation, do nothing if so
+                if str(result) in Sampler.recently_assigned:
+                    return result
+
+                condition = threading.Condition()
+                Sampler.recently_assigned[str(result)] = {
+                    "data_object": result,
+                    "thread_condition": condition
+                }
                 threading.Thread(target=sleep_and_remove,
-                                 args=(result, )).start()
+                                 args=(result, condition),
+                                 name=str(result)).start()
 
             # returning from more_fragments()
             elif isinstance(result, BaseManager) and all([isinstance(x, Fragment) for x in result]):
                 for fragment in result:
-                    Sampler.recently_assigned.append(fragment)
+                    # check for existing reservation, do nothing if so
+                    if str(fragment) in Sampler.recently_assigned:
+                        return result
+                    condition = threading.Condition()
+                    Sampler.recently_assigned[str(fragment)] = {
+                        "data_object": fragment,
+                        "thread_condition": condition,
+                    }
                     threading.Thread(target=sleep_and_remove,
-                                     arg=(fragment, )).start()
+                                     args=(fragment, condition),
+                                     name=str(fragment)).start()
 
             # during None and exception returns, do nothing
             else:
@@ -66,8 +93,8 @@ class Sampler:
 
     @staticmethod
     def excluding_reserved(query: BaseManager):
-        for excluded in Sampler.recently_assigned:
-            query = Sampler.exclude_one(query, excluded)
+        for excluded in Sampler.recently_assigned.keys():
+            query = Sampler.exclude_one(query, Sampler.recently_assigned[excluded]["data_object"])
         return query
 
     @staticmethod
@@ -101,7 +128,8 @@ class Sampler:
     def more_models(limit: int, exclude=None):
         """Returns a list of at most <limit> unfinished models
         """
-        models = Model.objects.filter(classes__gte=1, fragment__label__isnull=True)
+        models = Model.objects.filter(
+            classes__gte=1, fragment__label__isnull=True)
 
         if exclude is not None:
             models = models.exclude(name=exclude.name)
@@ -125,4 +153,19 @@ class Sampler:
 
     # Concurrency
     # Ensure that simultaneous users get different things to work on
-    recently_assigned = []
+    # one item ex: Fragment
+    #   "Person_class0": {
+    #       "data_object": fragment_object_from_django,
+    #       "thread_condition": condition_object_of_sleeper_thread
+    #   }
+    recently_assigned = {}
+
+    @staticmethod
+    def free(data: Union[Model, Fragment]):
+        assigned = Sampler.recently_assigned[str(data)]
+        condition : threading.Condition = assigned["thread_condition"]
+        condition.acquire()
+        try:
+            condition.notify()
+        finally:
+            condition.release()

@@ -1,3 +1,4 @@
+import threading
 from labeling.models import Fragment, Model
 from django.test import TestCase
 
@@ -24,3 +25,12 @@ class SamplerTestCase(TestCase):
         self.assertIsNotNone(fragment)
         self.assertIsNotNone(fragment2)
         self.assertNotEqual(fragment, fragment2)
+
+        # freeing
+        Sampler.free(fragment)
+        Sampler.free(fragment2)
+        Sampler.free(model)
+        with self.assertRaises(KeyError):
+            Sampler.free(model2)
+        threading.Event().wait(0.01)
+        self.assertEqual(len(Sampler.recently_assigned), 0)
