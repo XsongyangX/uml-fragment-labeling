@@ -27,8 +27,8 @@ def index(request, model=None, fragment=None):
         pass # business as usual
 
     # more models
-    more_models = [x for x in Sampler.more_models(6) if x != model]
-    more_fragments = [x for x in Fragment.objects.filter(model=model, label__isnull=True)[:6] if x != fragment]
+    more_models = Sampler.more_models(5, exclude=model)
+    more_fragments = Sampler.more_fragments(model=model, limit=5)
 
     more = []
 
