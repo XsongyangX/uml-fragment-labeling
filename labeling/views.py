@@ -1,6 +1,7 @@
 import json
 from labeling.sampler import Sampler, block
 from django.http.response import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden, JsonResponse
+from django.http.request import HttpRequest
 from django.shortcuts import render
 from django.views import generic
 from django.http import HttpResponseRedirect
@@ -10,7 +11,24 @@ from .models import Label, Fragment, Model
 
 from .forms import DuplicateLabelException, LabelForm
 
-def index(request, model=None, fragment=None):
+def index(request: HttpRequest, model=None, fragment=None):
+
+    # Cookies
+    try:
+        last_fragment = request.COOKIES["active_fragment"]
+    except KeyError:
+        last_fragment = None
+
+    # clear reservations from the last fragment
+    if last_fragment is not None:
+        previous_fragments = []
+        for previous_fragment in json.loads(request.COOKIES["reserved_fragments"]):
+            if previous_fragment['filter'] == "animals":
+                previous_fragments.append(Fragment.objects.get(model__name=previous_fragment['model'], kind=previous_fragment['kind'], number=previous_fragment['number']))
+        threads = Sampler.free_fragments(previous_fragments)
+        for sleeper in threads:
+            if sleeper is not None:
+                sleeper.join(5)
 
     form = LabelForm()
 
@@ -76,9 +94,15 @@ def index(request, model=None, fragment=None):
         "fragment_number": fragment.number,
         "form": form,
         "more": more,
-        "more_json": json.dumps(more)
     }
-    return render(request, "labeling/index.html", context=context)
+    response = render(request, "labeling/index.html", context=context)
+
+    # Cookies
+    # Log on this response
+    response.set_cookie("reserved_fragments", json.dumps(more))
+    response.set_cookie("active_fragment", context["shown_fragment"])
+
+    return response
 
 def get_form(request, model, kind, number):
     
@@ -114,16 +138,3 @@ def specific(request, model, kind, number):
     model = Model.objects.get(name=model)
     fragment = Fragment.objects.get(model=model, kind=kind, number=number)
     return index(request, model=model, fragment=fragment)
-
-def release(request):
-    if type(request.POST['more']) is str:
-        data = json.loads(request.POST['more'])
-    else:
-        data = request.POST['more']
-    fragments = []
-    for fragment in data:
-        if fragment['filter'] == "animals":
-            fragments.append(Fragment.objects.get(model__name=fragment['model'], kind=fragment['kind'], number=fragment['number']))
-    Sampler.free_fragments(fragments)
-
-    return JsonResponse({"msg":"success"})

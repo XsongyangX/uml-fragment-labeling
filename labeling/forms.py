@@ -4,8 +4,8 @@ from django import forms
 from .models import Label
 
 class LabelForm(forms.Form):
+    not_in_english = forms.BooleanField(required=False, label="This is not in English.", help_text="\n", initial=False)
     description = forms.CharField(label='Description', max_length=500, widget=forms.Textarea)
-
     def process(self, fragment):
 
         # check if already labeled
@@ -16,7 +16,7 @@ class LabelForm(forms.Form):
         else:
             raise DuplicateLabelException
 
-        Label.objects.create(label=self.cleaned_data["description"], fragment=fragment)
+        Label.objects.create(label=self.cleaned_data["description"], fragment=fragment, in_english=not self.cleaned_data["not_in_english"])
         Sampler.current_class_count = fragment.model.classes
 
 class DuplicateLabelException(Exception):

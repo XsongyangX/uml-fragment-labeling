@@ -22,6 +22,7 @@ class Model(models.Model):
 class Label(models.Model):
     label = models.TextField()
     fragment = models.ForeignKey('Fragment', models.DO_NOTHING, null=True)
+    in_english = models.BooleanField(default=True)
 
     def __str__(self):
         return str(self.fragment)
