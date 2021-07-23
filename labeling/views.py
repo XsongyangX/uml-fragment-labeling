@@ -1,5 +1,6 @@
-from labeling.sampler import Sampler
-from django.http.response import HttpResponse, HttpResponseForbidden
+import json
+from labeling.sampler import Sampler, block
+from django.http.response import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.shortcuts import render
 from django.views import generic
 from django.http import HttpResponseRedirect
@@ -15,6 +16,10 @@ def index(request, model=None, fragment=None):
 
     if model == None or fragment == None:
         model, fragment = Sampler.next()
+    else:
+        @block(60)
+        def block_this(): return fragment
+        block_this()
 
     # check for end conditions
     if model == None and fragment == None:
@@ -33,7 +38,15 @@ def index(request, model=None, fragment=None):
     more = []
 
     for m in more_models:
-        incomplete_fragment = Fragment.objects.filter(model=m, label__isnull=True).first()
+        incomplete_fragment = Sampler.excluding_reserved(Fragment.objects.filter(model=m, label__isnull=True))
+        if len(incomplete_fragment) == 0:
+            # block the model when all fragments are blocked
+            @block(60)
+            def block_this(): return m
+            block_this()
+            continue
+        else:
+            incomplete_fragment = incomplete_fragment.first()
         more.append({
             "filter": "nature", # nature for models
             "image": f"fragments/{m.name}.png",
@@ -62,7 +75,8 @@ def index(request, model=None, fragment=None):
         "fragment_kind": fragment.kind,
         "fragment_number": fragment.number,
         "form": form,
-        "more": more
+        "more": more,
+        "more_json": json.dumps(more)
     }
     return render(request, "labeling/index.html", context=context)
 
@@ -98,3 +112,16 @@ def specific(request, model, kind, number):
     model = Model.objects.get(name=model)
     fragment = Fragment.objects.get(model=model, kind=kind, number=number)
     return index(request, model=model, fragment=fragment)
+
+def release(request):
+    if type(request.POST['more']) is str:
+        data = json.loads(request.POST['more'])
+    else:
+        data = request.POST['more']
+    fragments = []
+    for fragment in data:
+        if fragment['filter'] == "animals":
+            fragments.append(Fragment.objects.get(model__name=fragment['model'], kind=fragment['kind'], number=fragment['number']))
+    Sampler.free_fragments(fragments)
+
+    return JsonResponse({"msg":"success"})

@@ -1,7 +1,8 @@
 # Chooses data samples
 
-from typing import Union
+from typing import List, Union
 from django.db.models.manager import BaseManager
+from django.db.models.query import QuerySet
 from .models import Model, Fragment
 
 import threading
@@ -51,7 +52,7 @@ def block(duration):
                                  name=str(result)).start()
 
             # returning from more_fragments()
-            elif isinstance(result, BaseManager) and all([isinstance(x, Fragment) for x in result]):
+            elif isinstance(result, QuerySet) and all([isinstance(x, Fragment) for x in result]):
                 for fragment in result:
                     # check for existing reservation, do nothing if so
                     if str(fragment) in Sampler.recently_assigned:
@@ -64,6 +65,22 @@ def block(duration):
                     threading.Thread(target=sleep_and_remove,
                                      args=(fragment, condition),
                                      name=str(fragment)).start()
+
+            # block one fragment
+            elif isinstance(result, Fragment):
+                
+                fragment = result
+                if str(fragment) in Sampler.recently_assigned:
+                        return result
+                condition = threading.Condition()
+                
+                Sampler.recently_assigned[str(fragment)] = {
+                    "data_object": fragment,
+                    "thread_condition": condition,
+                }
+                threading.Thread(target=sleep_and_remove,
+                                    args=(fragment, condition),
+                                    name=str(fragment)).start()
 
             # during None and exception returns, do nothing
             else:
@@ -169,3 +186,22 @@ class Sampler:
             condition.notify()
         finally:
             condition.release()
+
+    @staticmethod
+    def free_fragments(fragments: List[Fragment]):
+        for f in fragments:
+            # also frees the associated model if possible
+            if str(f.model) in Sampler.recently_assigned:
+                Sampler.free(f.model)
+            Sampler.free(f)
+    
+    @staticmethod
+    def free_all():
+        for element in Sampler.recently_assigned.keys():
+            assigned = Sampler.recently_assigned[element]
+            condition : threading.Condition = assigned["thread_condition"]
+            condition.acquire()
+            try:
+                condition.notify()
+            finally:
+                condition.release()
