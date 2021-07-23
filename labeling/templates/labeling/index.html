@@ -261,14 +261,15 @@ https://templatemo.com/tm-544-comparto
         var token = '{{csrf_token}}';
 
         window.addEventListener('beforeunload', function(e) {
-            e.preventDefault();
+            // e.preventDefault();
+            e.returnValue = '';
             $.ajax({
                 headers: { "X-CSRFToken": token },
                 type: "POST",
                 url: "/labeling/release/",
                 data: { more: '{{more_json|escapejs}}'},
             });
-            });
+        });
     </script>
 </body>
 

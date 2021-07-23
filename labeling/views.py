@@ -1,6 +1,6 @@
 import json
 from labeling.sampler import Sampler, block
-from django.http.response import HttpResponse, HttpResponseForbidden, JsonResponse
+from django.http.response import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden, JsonResponse
 from django.shortcuts import render
 from django.views import generic
 from django.http import HttpResponseRedirect
@@ -103,6 +103,8 @@ def get_form(request, model, kind, number):
                 return HttpResponse(f"An existing label already exists for {fragment}. Back to <a href='/'>Menu</a>.")
 
             return HttpResponseRedirect('/labeling/')
+        else:
+            return HttpResponseBadRequest("Invalid form. Back to <a href='/'>Menu</a>.")
 
     # if a GET (or any other method) we throw an error
     else:

@@ -179,7 +179,10 @@ class Sampler:
 
     @staticmethod
     def free(data: Union[Model, Fragment]):
-        assigned = Sampler.recently_assigned[str(data)]
+        try:
+            assigned = Sampler.recently_assigned[str(data)]
+        except KeyError:
+            return
         condition : threading.Condition = assigned["thread_condition"]
         condition.acquire()
         try:
