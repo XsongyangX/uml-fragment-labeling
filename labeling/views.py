@@ -99,8 +99,8 @@ def index(request: HttpRequest, model=None, fragment=None):
 
     # Cookies
     # Log on this response
-    response.set_cookie("reserved_fragments", json.dumps(more))
-    response.set_cookie("active_fragment", context["shown_fragment"])
+    response.set_cookie("reserved_fragments", json.dumps(more), max_age=60)
+    response.set_cookie("active_fragment", context["shown_fragment"], max_age=60)
 
     return response
 
