@@ -71,12 +71,6 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, "labeling/index.html")
         self.assertNotEqual(len(Sampler.recently_assigned), 0)
 
-        # check post request to free things
-        post_response = self.client.post('/labeling/release/', {"more": json.dumps(response.context['more'])})
-        self.assertEqual(post_response.status_code, 200)
-        threading.Event().wait(0.01)
-        self.assertEqual(len(Sampler.recently_assigned), 1)
-
         Sampler.free_all()
         threading.Event().wait(0.01)
         self.assertEqual(len(Sampler.recently_assigned), 0)
@@ -90,7 +84,6 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response2, "labeling/index.html")
 
         self.assertNotEqual(response.context.get("shown_fragment"), response2.context.get("shown_fragment"))
-        self.assertNotEqual(response.context.get("shown_model_name"), response2.context.get("shown_model_name"))
 
         Sampler.free_all()
         threading.Event().wait(0.01)
