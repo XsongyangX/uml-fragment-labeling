@@ -24,5 +24,5 @@ urlpatterns = [
     path('labeling/', include(('labeling.urls', 'labeling'), namespace="labeling")),
     path('admin/', admin.site.urls, name='admin'),
     path('', index),
-    path('favicon.ico', RedirectView.as_view(url=staticfiles_storage.url('img/favicon.ico')))
+    # path('favicon.ico', RedirectView.as_view(url=staticfiles_storage.url('img/favicon.ico')))
 ]
