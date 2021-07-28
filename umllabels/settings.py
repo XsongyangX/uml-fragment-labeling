@@ -141,6 +141,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'labeling/static')
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+# Activate Django-Heroku.
+django_heroku.settings(locals())
+
 # Logging
 LOGGING = {
     'version': 1,
@@ -181,6 +184,5 @@ LOGGING = {
     }
 }
 
-# Activate Django-Heroku.
-django_heroku.settings(locals())
+
 DEBUG = True
