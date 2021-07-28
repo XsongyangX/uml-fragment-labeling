@@ -108,7 +108,7 @@ def block(duration):
 class Sampler:
 
     current_class_count = 1
-    largest_class_count = Model.objects.order_by("-classes").first().classes
+    largest_class_count = 400 # Model.objects.order_by("-classes").first().classes
 
     @staticmethod
     def exclude_one(query: BaseManager, element: Union[Fragment, Model]):
