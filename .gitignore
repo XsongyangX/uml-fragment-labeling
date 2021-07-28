@@ -4,7 +4,7 @@ __pycache__
 
 # images are inside a tar.bz2
 *.tar.bz2
-labeling/static/fragments/
+#labeling/static/fragments/
 
 # static
 staticfiles/
