@@ -8,3 +8,6 @@ labeling/static/fragments/
 
 # static
 staticfiles/
+
+# dump
+db.json
