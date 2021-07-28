@@ -14,5 +14,5 @@ python manage.py shell -c 'from django.contrib.contenttypes.models import Conten
 # 4. Load data from json
 python manage.py loaddata dump_fragments.json
 
-# 5. Heroku
-gunicorn umllabels.wsgi
+# 5. Collect static
+# python manage.py collectstatic --no-input

@@ -1,1 +1,1 @@
-web: ./heroku.sh
+web: gunicorn umllabels.wsgi
