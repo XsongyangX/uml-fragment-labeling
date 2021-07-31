@@ -30,7 +30,7 @@ https://templatemo.com/tm-544-comparto
     <a id="button"><i class="fas fa-angle-up fa-2x"></i></a>
     <div class="container-fluid">
         <div class="tm-site-header tm-mb-1">
-            <div class="tm-site-name-container tm-bg-color-1">
+            <div class="tm-site-name-container tm-bg-color-1" style="padding-top: 19px;padding-bottom: 19px;">
                 <a href="/"><h1 class="tm-text-white">Labeling</h1></a>
             </div>
             <div class="tm-nav-container tm-bg-color-8">
@@ -38,21 +38,17 @@ https://templatemo.com/tm-544-comparto
                     <ul>
                         <li class="tm-nav-item">
                             <a href="#services" class="tm-nav-link">
-                                <span class="tm-mb-1">1</span>
-                                <span>Sample</span>
+                                <span class="tm-mb-1">1 Sample</span>
                             </a>
                         </li>
                         <li class="tm-nav-item">
                             <a href="#gallery" class="tm-nav-link">
-                                <span class="tm-mb-1">2</span>
-                                <span>More</span>
+                                <span class="tm-mb-1">2 More</span>
                             </a>
                         </li>
                         <li class="tm-nav-item">
-                            <a href="#contact" class="tm-nav-link">
-                                <span class="tm-nav-text tm-mb-1">3</span>
-                                <span class="tm-nav-text">Tutorial</span>
-                            </a>
+                            <a href="#contact" class="tm-nav-link" id="tutorial-nav">
+                                <span class="tm-nav-text tm-mb-1">3 Tutorial</span>                            </a>
                         </li>
                     </ul>
                 </nav>
@@ -61,12 +57,12 @@ https://templatemo.com/tm-544-comparto
         <section class="tm-mb-1 tm-row tm-services-row" id="services">
             <div class="tm-section-2-l">
                 <article class="tm-bg-color-6 tm-box-pad tm-mb-1">
-                    <h2 class="tm-mb-2">1 Sample to label</h2>
+                    <h2 class="tm-mb-2">1 Sample to label <a href="#contact">(?)</a></h2>
+                    <a class="tm-btn tm-btn-2" href="#gallery">Change Sample</a>
                     <div class="image-container" id="tutorial-model">
                         <!-- https://usefulangle.com/post/1/jquery-dragging-image-within-div -->
                         <img class="drag-image" src="{% static shown_fragment %}" alt="Shown fragment" />
                     </div>
-                    <button type="button" class="re-center-button ml-auto tm-btn tm-btn-3">Center</button>
                 </article>
 
                 <div class="tm-bg-color-7 tm-em-box">
@@ -74,8 +70,7 @@ https://templatemo.com/tm-544-comparto
                             {% csrf_token %}
                             {{ form }}
                         <div class="in-rows">
-                            <input type="submit" class="tm-btn tm-btn-2" value="Submit">
-                            <a class="tm-btn tm-btn-2" href="#gallery">Change Sample</a>
+                            <input type="submit" class="tm-btn tm-btn-2" value="Submit" id="form-submit">
                         </div>
                     </form>
                 </div>
