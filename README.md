@@ -1,5 +1,5 @@
 # Django project of the labeling process of UML fragments
-A UML fragment is a portion of a UML class diagram. The label is a English text description.
+A UML fragment is a portion of a UML class diagram. The label is a English text description. The app is hosted on [Heroku](https://umllabels.herokuapp.com/)!
 
 ## Getting Started
 This will run the website on your own computer.
