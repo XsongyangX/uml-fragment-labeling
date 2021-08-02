@@ -4,7 +4,7 @@ from django import forms
 from .models import Label
 
 class LabelForm(forms.Form):
-    not_in_english = forms.BooleanField(required=False, label="This is not in English.", help_text="\n", initial=False)
+    not_in_english = forms.BooleanField(required=False, label="This fragment/model is not in English.", help_text="\n", initial=False)
     description = forms.CharField(label='Description', max_length=500, widget=forms.Textarea)
     def process(self, fragment):
 

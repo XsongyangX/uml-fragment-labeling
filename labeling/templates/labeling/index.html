@@ -57,7 +57,7 @@ https://templatemo.com/tm-544-comparto
         <section class="tm-mb-1 tm-row tm-services-row" id="services">
             <div class="tm-section-2-l">
                 <article class="tm-bg-color-6 tm-box-pad tm-mb-1">
-                    <h2 class="tm-mb-2">1 Sample to label <a href="#contact">(?)</a></h2>
+                    <h2 class="tm-mb-2">1 Sample to label </h2>
                     <a class="tm-btn tm-btn-2" href="#gallery">Change Sample</a>
                     <div class="image-container" id="tutorial-model">
                         <!-- https://usefulangle.com/post/1/jquery-dragging-image-within-div -->
@@ -77,6 +77,9 @@ https://templatemo.com/tm-544-comparto
             </div>
             <div class="tm-section-2-r">
                 Your given model is <b>{{shown_model_name}}</b>. Pan images with mouse and zoom by scrolling.
+                <br>
+                Describe what the fragment on the left means in English. The larger model is only given for context.
+                Don't describe the entire model. <a href="#contact">(See Tutorial)</a>
                 <div class="image-container" id="tutorial-model">
                     <!-- https://usefulangle.com/post/1/jquery-dragging-image-within-div -->
                     <img class="drag-image" src="{% static shown_model %}" alt="Shown model" />
@@ -128,16 +131,17 @@ https://templatemo.com/tm-544-comparto
                         <img class="drag-image" src="{% static 'umllabels/tutorial/CFG_rel2.png' %}"
                             alt="Example model" />
                     </div>
-                    <button type="button" class="re-center-button ml-auto tm-btn tm-btn-3">Center</button>
+                    <p><i>Description 1:</i> A conditional node has one node that serves as a true condition node.</p>
+                    <p><i>Description 2:</i> The conditional node of a CFG has one true condition node. Each such node has
+                        one conditional node.</p>
                 </div>
                 <div class="contact-info-outer">
                     <div class="tm-bg-color-6 contact-info">
                         <p>A fragment is either one class or one relationship between two classes.</p>
                         <p>Describe in English what the fragment is in the context of the model. There may be noise in the data. <a
                                 href="https://www.google.com/search?hl=en&q=uml"><u>Don't know UML?</u></a></p>
-                        <p><i>Ex 1:</i> A conditional node has one node that serves as a true condition node.</p>
-                        <p><i>Ex 2:</i> The conditional node of a CFG has one true condition node. Each such node has
-                            one conditional node.</p>
+                        <p>In some cases, the data is not entirely in English. You still have to describe it in English to the best of your knowledge and check the "not in English" box.
+                        Optionally, you can change the sample to something else and someone else can try to label that data.</p>
                     </div>
                 </div>
             </div>

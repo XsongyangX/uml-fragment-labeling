@@ -11,3 +11,4 @@ staticfiles/
 
 # dump
 db.json
+*.dump
