@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400" rel="stylesheet" />
+
+    {% load static%}
+    <link rel="shortcut icon" type="image/png" href="{% static 'img/favicon.ico' %}" />
+
+    <link href="{% static 'templatemo_544_comparto/fontawesome/css/all.min.css' %}" rel="stylesheet" />
+    <link href="{% static 'templatemo_544_comparto/css/templatemo-comparto.css' %}" rel="stylesheet" />
+
+    {% comment %} Override {% endcomment %}
+    <link href="{% static 'umllabels/labeling.css' %}" rel="stylesheet" />
+    <title>Labeling | The UML Labeling Initiative</title>
+    <!--
+
+Comparto TemplateMo
+
+https://templatemo.com/tm-544-comparto
+
+-->
+</head>
+
+<body>
+    <!-- Back to top button -->
+    <a id="button"><i class="fas fa-angle-up fa-2x"></i></a>
+    <div class="container-fluid">
+        <div class="tm-site-header tm-mb-1">
+            <div class="tm-site-name-container tm-bg-color-1" style="padding-top: 19px;padding-bottom: 19px;">
+                <a href="/"><h1 class="tm-text-white">Validation</h1></a>
+            </div>
+        </div>
+        <section class="tm-mb-1 tm-row tm-services-row" id="services">
+            <div class="tm-section-2-l">
+                <article class="tm-bg-color-6 tm-box-pad tm-mb-1">
+                    <h2 class="tm-mb-2">1 Sample to validate </h2>
+                    <div class="image-container" id="tutorial-model">
+                        <!-- https://usefulangle.com/post/1/jquery-dragging-image-within-div -->
+                        <img class="drag-image" src="{% static shown_fragment %}" alt="Shown fragment" />
+                    </div>
+                </article>
+                Given description: {{ label }}
+                <div class="tm-bg-color-7 tm-em-box">
+                    <form action="/validation/form/{{ shown_model_name }}/{{ fragment_kind }}/{{ fragment_number }}" method="post">
+                            {% csrf_token %}
+                            {{ form }}
+                        <div class="in-rows">
+                            <input type="submit" class="tm-btn tm-btn-2" value="Submit" id="form-submit">
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="tm-section-2-r">
+                Your given model is <b>{{shown_model_name}}</b>. Pan images with mouse and zoom by scrolling.
+                <br>
+                Someone has provided a description for the fragment. Is it an acceptable label? If rejected,
+                the label will be sent back to the labeling pool.
+                <div class="image-container" id="tutorial-model">
+                    <!-- https://usefulangle.com/post/1/jquery-dragging-image-within-div -->
+                    <img class="drag-image" src="{% static shown_model %}" alt="Shown model" />
+                </div>
+                <button type="button" class="re-center-button ml-auto tm-btn tm-btn-3">Center</button>
+            </div>
+        </section>
+    </div> <!-- .container -->
+
+    <script src="{% static 'templatemo_544_comparto/js/jquery.min.js' %}"></script>
+    <!-- https://jquery.com/download/ -->
+    <script src="{% static 'templatemo_544_comparto/js/imagesloaded.pkgd.min.js' %}"></script>
+    <!-- https://imagesloaded.desandro.com/ -->
+    <script src="{% static 'templatemo_544_comparto/js/isotope.pkgd.min.js' %}"></script>
+    <!-- https://isotope.metafizzy.co/ -->
+    <script src="{% static 'templatemo_544_comparto/js/jquery.singlePageNav.min.js' %}"></script>
+    <!-- https://github.com/ChrisWojcik/single-page-nav -->
+    <script src="{% static 'umllabels/drag.js' %}"></script>
+    <!-- https://usefulangle.com/post/1/jquery-dragging-image-within-div-->
+    <script>
+
+        // Scroll to Top button
+        var btn = $('#button');
+
+        $(window).scroll(function () {
+            if ($(window).scrollTop() > 300) {
+                btn.addClass('show');
+            } else {
+                btn.removeClass('show');
+            }
+        });
+
+        btn.on('click', function (e) {
+            e.preventDefault();
+            $('html, body').animate({ scrollTop: 0 }, '300');
+        });
+
+        // DOM is ready
+        $(function () {
+            // Single Page Nav
+            $('#tm-nav').singlePageNav({ speed: 600 });
+
+            // Smooth Scroll (https://css-tricks.com/snippets/jquery/smooth-scrolling/)
+            $('a[href*="#"]')
+                // Remove links that don't actually link to anything
+                .not('[href="#"]')
+                .not('[href="#0"]')
+                .click(function (event) {
+                    // On-page links
+                    if (
+                        location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '')
+                        &&
+                        location.hostname == this.hostname
+                    ) {
+                        // Figure out element to scroll to
+                        var target = $(this.hash);
+                        target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+                        // Does a scroll target exist?
+                        if (target.length) {
+                            // Only prevent default if animation is actually gonna happen
+                            event.preventDefault();
+                            $('html, body').animate({
+                                scrollTop: target.offset().top
+                            }, 600, function () {
+                                // Callback after animation
+                                // Must change focus!
+                                var $target = $(target);
+                                $target.focus();
+                                if ($target.is(":focus")) { // Checking if the target was focused
+                                    return false;
+                                } else {
+                                    $target.attr('tabindex', '-1'); // Adding tabindex for elements not focusable
+                                    $target.focus(); // Set focus again
+                                };
+                            });
+                        }
+                    }
+                });
+
+            /* Isotope Gallery */
+
+            // init isotope
+            var $gallery = $(".tm-gallery").isotope({
+                itemSelector: ".tm-gallery-item",
+                layoutMode: "fitRows"
+            });
+            // layout Isotope after each image loads
+            $gallery.imagesLoaded().progress(function () {
+                $gallery.isotope("layout");
+            });
+
+            $(".filters-button-group").on("click", "a", function () {
+                var filterValue = $(this).attr("data-filter");
+                $gallery.isotope({ filter: filterValue });
+            });
+
+            $(".tabgroup > div").hide();
+            $(".tabgroup > div:first-of-type").show();
+            $(".tabs a").click(function (e) {
+                e.preventDefault();
+                var $this = $(this),
+                    tabgroup = "#" + $this.parents(".tabs").data("tabgroup"),
+                    others = $this
+                        .closest("li")
+                        .siblings()
+                        .children("a"),
+                    target = $this.attr("href");
+                others.removeClass("active");
+                $this.addClass("active");
+            });
+        });
+        
+    </script>
+</body>
+
+</html>

@@ -14,3 +14,13 @@ def index(request):
         "fragments_done": Label.objects.count()
     }
     return render(request, "umllabels/index.html", context=context)
+
+def validation(request):
+    context = {
+        "label": "This is a house."
+    }
+    return render(request, "umllabels/validation.html", context=context)
+
+def get_form(request, model, kind, number):
+
+    pass

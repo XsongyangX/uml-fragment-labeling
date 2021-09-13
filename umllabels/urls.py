@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.views.generic.base import RedirectView
-from .views import index
+from .views import index, validation, get_form
 from django.contrib import admin
 from django.urls import path
 from django.urls.conf import include
@@ -24,5 +24,7 @@ urlpatterns = [
     path('labeling/', include(('labeling.urls', 'labeling'), namespace="labeling")),
     path('admin/', admin.site.urls, name='admin'),
     path('', index),
+    path('validation/', validation, name='validation'),
+    path('validation/form/<str:model>/<slug:kind>/<int:number>', get_form)
     # path('favicon.ico', RedirectView.as_view(url=staticfiles_storage.url('img/favicon.ico')))
 ]
