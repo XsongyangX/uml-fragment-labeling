@@ -24,5 +24,7 @@ class Label(models.Model):
     fragment = models.ForeignKey('Fragment', models.DO_NOTHING, null=True)
     in_english = models.BooleanField(default=True)
 
+    validated = models.BooleanField(default=False)
+
     def __str__(self):
         return str(self.fragment)

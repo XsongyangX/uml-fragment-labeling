@@ -43,8 +43,8 @@ https://templatemo.com/tm-544-comparto
                         <img class="drag-image" src="{% static shown_fragment %}" alt="Shown fragment" />
                     </div>
                 </article>
-                Given description: {{ label }}
                 <div class="tm-bg-color-7 tm-em-box">
+                {{ label | linebreaks }}
                     <form action="/validation/form/{{ shown_model_name }}/{{ fragment_kind }}/{{ fragment_number }}" method="post">
                             {% csrf_token %}
                             {{ form }}
